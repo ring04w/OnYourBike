@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">On Your Bike by ring04w</string>
+    <string name="app_name">On Your Bike</string>
     <string name="hello_world">Hello Tsung!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_timer">Timer</string>
+    <string name="startText">Start</string>
+    <string name="stopText">Stop</string>
+    
 
 </resources>

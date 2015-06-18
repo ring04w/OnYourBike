@@ -1,36 +1,47 @@
 package com.ring04w.onyourbike;
 
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 
 
 public class TimerActivity extends ActionBarActivity {
 	
-	static String className;
+	private static String CLASS_NAME;
 	
 	public TimerActivity(){
-		className = getClass().getName();
-	}
+		CLASS_NAME = getClass().getName();
+	} 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
         
-        TextView hello = (TextView) findViewById(R.id.hello);
-        Log.d(className, "Setting text.");
-        hello.setText("On your bike");
+        TextView timer = (TextView) findViewById(R.id.timer);
+//        Button start = (Button)findViewById(R.id.startOK);
+        Log.d(CLASS_NAME, "Setting text.");
+//        if(BuildConfig.DEBUG){
+//        	StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+//        	.detectAll().penaltyLog().build());
+//        	StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+//        	.detectAll().penaltyLog().penaltyDeath().build());
+//        }
+        
+         timer.setText("On your bike");
+//        start.setText("Start");
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-    	Log.d(className, "Showing menu.");
+    	Log.d(CLASS_NAME, "Showing menu.");
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
