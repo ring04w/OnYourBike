@@ -1,31 +1,49 @@
 package com.ring04w.onyourbike;
 
+import android.R.string;
 import android.os.Bundle;
-import android.os.StrictMode;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 
 public class TimerActivity extends ActionBarActivity {
+	private static long UPDATE_EVERY = 200;
 	
 	private static String CLASS_NAME;
+	protected TextView counter;
+	protected Button start;
+	protected Button stop;
+	protected long startedAt;
+	protected long lastStopped;
+	protected Handler handler;
+	protected UpdateTimer updateTimer;
+	protected boolean timerRunning;
+	
 	
 	public TimerActivity(){
 		CLASS_NAME = getClass().getName();
 	} 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
         
-        TextView timer = (TextView) findViewById(R.id.timer);
-//        Button start = (Button)findViewById(R.id.startOK);
+        counter = (TextView) findViewById(R.id.timer);
+        start = (Button)findViewById(R.id.start_button);  
+        stop = (Button)findViewById(R.id.stop_button);
+        
+        timerRunning = false;
+        enableButtons();
         Log.d(CLASS_NAME, "Setting text.");
+              
+        
 //        if(BuildConfig.DEBUG){
 //        	StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
 //        	.detectAll().penaltyLog().build());
@@ -33,8 +51,7 @@ public class TimerActivity extends ActionBarActivity {
 //        	.detectAll().penaltyLog().penaltyDeath().build());
 //        }
         
-         timer.setText("On your bike");
-//        start.setText("Start");
+        //        start.setText("Start");
     }
 
 
@@ -57,4 +74,76 @@ public class TimerActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    
+    public void clickedStart(View view){
+    	Log.d(CLASS_NAME, "Clicked the start button");
+    	
+    	timerRunning = true;
+    	startedAt = System.currentTimeMillis();
+    	enableButtons();
+    	
+    	
+    	
+    	setTimeDisplay();
+    	
+    }
+    
+    public void clickedStop(View view){
+    	Log.d(CLASS_NAME, "Clicked the stop button");
+    	
+    	timerRunning = false;
+    	lastStopped = System.currentTimeMillis();
+    	enableButtons();
+    	setTimeDisplay();
+    	
+    }
+    
+    public void enableButtons(){
+    	Log.d(CLASS_NAME, "enableButtons");
+    	start.setEnabled(!timerRunning);
+    	stop.setEnabled(timerRunning);
+    }
+    
+    public void setTimeDisplay(){
+    	
+    	String display;
+    	 long timeNow; 
+    	 long seconds;
+    	 long minutes;
+    	 long hours;
+    	 long diff;
+    	
+    	if(timerRunning){
+    		timeNow = System.currentTimeMillis();
+    	}else{
+    		timeNow = lastStopped;
+    	}
+    	
+    	diff  = timeNow - startedAt;
+    	if (diff < 0){
+    		diff = 0;
+			
+		}
+    	
+    	seconds = diff / 1000;
+    	minutes = seconds / 60;
+    	hours = minutes / 60;
+    	seconds = seconds % 60;
+    	minutes = minutes % 60;
+    	
+    	display = String.format("%d", hours) + ":"
+    			+ String.format("%02d", minutes) + ":"
+    			+ String.format("%02d", seconds);
+    	counter.setText(display);
+    	
+    }
+    
+    	
+}
+
+
+class UpdateTimer implements Runnable{
+	public void run(){
+		
+	}
 }
