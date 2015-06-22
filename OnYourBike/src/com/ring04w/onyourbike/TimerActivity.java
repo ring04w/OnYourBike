@@ -1,6 +1,7 @@
 package com.ring04w.onyourbike;
 
 import android.R.string;
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -82,6 +83,9 @@ public class TimerActivity extends ActionBarActivity {
     	startedAt = System.currentTimeMillis();
     	enableButtons();
     	
+    	handler = new Handler();
+    	updateTimer = new UpdateTimer();
+    	handler.postDelayed(updateTimer, UPDATE_EVERY);
     	
     	
     	setTimeDisplay();
@@ -94,6 +98,9 @@ public class TimerActivity extends ActionBarActivity {
     	timerRunning = false;
     	lastStopped = System.currentTimeMillis();
     	enableButtons();
+    	
+    	handler.removeCallbacks(updateTimer);
+    	handler = null;
     	setTimeDisplay();
     	
     }
@@ -137,13 +144,26 @@ public class TimerActivity extends ActionBarActivity {
     	counter.setText(display);
     	
     }
-    
     	
-}
+
 
 
 class UpdateTimer implements Runnable{
+	Activity activity;
+	
 	public void run(){
+		setTimeDisplay();
 		
+		if (handler != null){
+			handler.postDelayed(this, UPDATE_EVERY);
+		}
 	}
+	}
+
+
+
+
 }
+
+
+
