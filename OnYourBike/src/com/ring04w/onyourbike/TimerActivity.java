@@ -4,13 +4,16 @@ import android.R.string;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class TimerActivity extends ActionBarActivity {
@@ -25,6 +28,9 @@ public class TimerActivity extends ActionBarActivity {
 	protected Handler handler;
 	protected UpdateTimer updateTimer;
 	protected boolean timerRunning;
+	protected Vibrator vibrator;
+	protected long lastSeconds;
+
 	
 	
 	public TimerActivity(){
@@ -35,6 +41,8 @@ public class TimerActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
+        
+      
         
         counter = (TextView) findViewById(R.id.timer);
         start = (Button)findViewById(R.id.start_button);  
@@ -54,7 +62,15 @@ public class TimerActivity extends ActionBarActivity {
         
         //        start.setText("Start");
     }
-
+    
+    public boolean onTouchEvent(MotionEvent event){
+    	if (event.getAction() == MotionEvent.ACTION_DOWN){
+    		vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+    		long[] pattern = {800, 50, 400, 30};
+    		vibrator.vibrate(pattern, 2);
+		}
+    	return super.onTouchEvent(event);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -100,12 +116,70 @@ public class TimerActivity extends ActionBarActivity {
     	enableButtons();
     	
     	handler.removeCallbacks(updateTimer);
+    	updateTimer = null;
     	handler = null;
     	setTimeDisplay();
     	
     }
     
-    public void enableButtons(){
+    @Override
+    public void onStart(){
+    	vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+    	if (vibrator == null){
+    		Log.w(CLASS_NAME, "No vibration service exists.");
+		}
+    	super.onStart();
+    	Log.d(CLASS_NAME, "onStart");
+    	
+    	if (timerRunning){
+    		handler = new Handler();
+    		updateTimer = new UpdateTimer();
+    		handler.postDelayed(updateTimer, UPDATE_EVERY);
+			
+		}
+    }
+    
+    @Override
+    public void onPause(){
+    	super.onPause();
+    	Log.d(CLASS_NAME, "onPause");
+    }
+    
+    @Override
+    public void onResume(){
+    	super.onResume();
+    	Log.d(CLASS_NAME, "onResume");
+    	
+    	enableButtons();
+    	setTimeDisplay();
+    }
+    
+    @Override
+    public void onStop(){
+    	super.onStop();
+    	Log.d(CLASS_NAME, "onStop");
+    	
+    if (timerRunning){
+    	handler.removeCallbacks(updateTimer);
+    	updateTimer = null;
+    	handler = null;
+	}
+    }
+    
+    @Override
+    public void onDestroy(){
+    	super.onDestroy();
+    	Log.d(CLASS_NAME, "onDestroy");
+    }
+    
+    @Override
+    public void onRestart(){
+    	super.onRestart();
+    	Log.d(CLASS_NAME, "onRestart");
+    }
+    	
+    	
+    	public void enableButtons(){
     	Log.d(CLASS_NAME, "enableButtons");
     	start.setEnabled(!timerRunning);
     	stop.setEnabled(timerRunning);
@@ -144,14 +218,52 @@ public class TimerActivity extends ActionBarActivity {
     	counter.setText(display);
     	
     }
+    
+    
+    public void vibrateCheck(){
+    	long timeNow = System.currentTimeMillis();
+    	long diff = timeNow - startedAt;
+    	long seconds = diff / 1000;
+    	long minutes = seconds / 60;
     	
+    	
+    	seconds = seconds % 60;
+    	minutes = minutes % 60;
+    	
+    	if (vibrator != null && seconds == 0 && seconds != lastSeconds){
+    		long[] once = {0, 100};
+    		long[] twice = {0, 100, 400, 100};
+    		long[] thrice = {0, 100, 400, 100, 400, 100};
+    		
+    		if (seconds == 0){
+    			vibrator.vibrate(thrice, -1);
+			}
+    		else if (seconds % 15 == 0){
+    			vibrator.vibrate(twice, -1);
+				
+			}
+    		else if(seconds % 5 == 0){
+    			vibrator.vibrate(once, -1);
+    		}
+			
+		}
+    	
+    	lastSeconds = seconds;
+    	
+    	
+    }
 
+    
 
 
 class UpdateTimer implements Runnable{
 	Activity activity;
 	
 	public void run(){
+		if(timerRunning){
+			vibrateCheck();
+			
+		}
 		setTimeDisplay();
 		
 		if (handler != null){
