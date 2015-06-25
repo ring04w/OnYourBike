@@ -1,7 +1,7 @@
 package com.ring04w.onyourbike;
 
-import android.R.string;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -13,7 +13,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class TimerActivity extends ActionBarActivity {
@@ -119,6 +118,17 @@ public class TimerActivity extends ActionBarActivity {
     	updateTimer = null;
     	handler = null;
     	setTimeDisplay();
+    	
+    }
+    
+    public void clickedSettings(View view){
+    	Log.d(CLASS_NAME, "Clicked the setings button");
+    	
+    	Intent settingsIntent = new Intent(getApplicationContext(),
+    			SettingActivity.class);
+    	startActivity(settingsIntent);
+    
+    	
     	
     }
     
@@ -250,7 +260,6 @@ public class TimerActivity extends ActionBarActivity {
     	
     	lastSeconds = seconds;
     	
-    	
     }
 
     
@@ -260,11 +269,12 @@ class UpdateTimer implements Runnable{
 	Activity activity;
 	
 	public void run(){
+		setTimeDisplay();
 		if(timerRunning){
 			vibrateCheck();
 			
 		}
-		setTimeDisplay();
+
 		
 		if (handler != null){
 			handler.postDelayed(this, UPDATE_EVERY);
