@@ -1,5 +1,7 @@
 package com.ring04w.onyourbike;
 
+import com.ring04w.onyourbike.model.Settings;
+
 import android.app.Application;
 
 public class OnYourBike extends Application{

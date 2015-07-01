@@ -7,19 +7,33 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.ring04w.onyourbike.Settings" >
+    tools:context="com.ring04w.onyourbike.model.Settings" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+            
 
     <CheckBox
         android:id="@+id/vibrate_checkbox"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/vibrate_box"        
-        />
+		android:layout_height="wrap_content" 
+		android:onClick="vibrateChanged"
+		android:text="@string/vibrate_checkbox"  />
+    
+	
+    <RelativeLayout
+        android:layout_width="match_parent" 
+        android:layout_height="match_parent" >
+        
+        
+        <Button
+            android:id="@+id/back_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true" 
+            android:layout_centerInParent="true"
+            android:onClick="goBack"
+            android:text="@string/back_button" />
+                      
+        </RelativeLayout>
 
 </LinearLayout>
 
